@@ -1,0 +1,33 @@
+server:
+  servlet:
+    context-path: /
+  port: 9090
+
+spring:
+  application:
+    name: Gateway-app
+  profiles:
+    active:
+      - default
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      routes:
+        - id: Book-Service
+          uri: http://localhost:8081/book-service/
+          predicates:
+            - Path=/**
+        - id: Library-Service
+          uri: http://localhost:8082/library-service/
+          predicates:
+            - Path=/**
+            
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
